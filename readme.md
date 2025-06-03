@@ -34,7 +34,8 @@ MovieBuzz is a simple React Native app that lets you search movies by title, vie
 
 ### Installation
 
-1. Clone the repo  
+1. Clone the repo
+
    ```bash
    git clone https://github.com/iamsainty/moviebuzz.git
    ```
@@ -44,16 +45,19 @@ MovieBuzz is a simple React Native app that lets you search movies by title, vie
    ```bash
    cd moviebuzz
    ```
+
 3. Install dependencies
 
    ```bash
    npm install
    ```
+
 4. Create a `.env` file in the root and add your OMDb API key:
 
    ```
    OMDB_API_KEY=your_api_key_here
    ```
+
 5. Start the Expo development server
 
    ```bash
@@ -62,8 +66,8 @@ MovieBuzz is a simple React Native app that lets you search movies by title, vie
 
 ### Running the App
 
-* Use the Expo Go app on your mobile device to scan the QR code shown in your terminal or browser.
-* The app will load, allowing you to search for movies and manage favorites.
+- Use the Expo Go app on your mobile device to scan the QR code shown in your terminal or browser.
+- The app will load, allowing you to search for movies and manage favorites.
 
 ## Deployment
 
@@ -81,7 +85,10 @@ This project is licensed under the MIT License.
 
 ### Screenshots
 
-*Add your screenshots here*
+![Home Screen](./assets/screenshots/homescreen.jpeg)
+![Search Screen](./assets/screenshots/searchscreen.jpeg)
+![Favorites Screen](./assets/screenshots/favouritescreen.jpeg)
+![Movie Detail Screen](./assets/screenshots/moviedetailscreen.jpeg)
 
 ---
 
