@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  SafeAreaView,
+  StatusBar,
+  Platform,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MovieCard from "../components/MovieCard";
 import { useNavigation } from "@react-navigation/native";
@@ -19,48 +27,88 @@ export default function FavoritesScreen() {
     return unsubscribe;
   }, [navigation]);
 
-  if (!favorites.length) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.empty}>
-          ❤️ You’ll see your favorite movies here.
-        </Text>
-      </View>
-    );
-  }
-
   return (
-    <FlatList
-      data={favorites}
-      keyExtractor={(item) => item.imdbID}
-      renderItem={({ item }) => (
-        <MovieCard
-          title={item.Title}
-          poster={item.Poster}
-          year={item.Year}
-          onPress={() =>
-            navigation.navigate("MovieDetail", { imdbID: item.imdbID })
-          }
-        />
-      )}
-      contentContainerStyle={styles.list}
-    />
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={Platform.OS === "android" ? "#f9f9f9" : undefined}
+      />
+      <View style={styles.container}>
+        <Text style={styles.title}>Your Favorites</Text>
+
+        {!favorites.length ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.heartIcon}>❤️</Text>
+            <Text style={styles.emptyText}>
+              You haven't added any favorites yet.
+            </Text>
+            <Text style={styles.subText}>
+              Browse movies and tap the heart to save them here.
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={favorites}
+            keyExtractor={(item) => item.imdbID}
+            renderItem={({ item }) => (
+              <MovieCard
+                title={item.Title}
+                poster={item.Poster}
+                year={item.Year}
+                onPress={() =>
+                  navigation.navigate("MovieDetail", { imdbID: item.imdbID })
+                }
+              />
+            )}
+            contentContainerStyle={styles.list}
+          />
+        )}
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  center: {
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#f9f9f9",
+    paddingTop: Platform.OS === "android" ? 30 : 0,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    paddingHorizontal: 10,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "600",
+    marginTop: 20,
+    marginBottom: 15,
+    color: "#333",
+  },
+  emptyContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
+    paddingHorizontal: 30,
   },
-  empty: {
-    fontSize: 16,
+  heartIcon: {
+    fontSize: 48,
+    marginBottom: 10,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: "500",
+    color: "#555",
+    textAlign: "center",
+  },
+  subText: {
+    fontSize: 14,
     color: "#777",
+    marginTop: 6,
+    textAlign: "center",
   },
   list: {
-    padding: 10,
-    backgroundColor: "#fff",
+    paddingBottom: 20,
   },
 });

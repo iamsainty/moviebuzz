@@ -100,6 +100,8 @@ export default function SearchScreen() {
         backgroundColor={Platform.OS === "android" ? "#f9f9f9" : undefined}
       />
       <View style={styles.container}>
+        <Text style={styles.title}>Search Movies</Text>
+
         <TextInput
           style={styles.input}
           placeholder="Search movies by title..."
@@ -166,6 +168,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "600",
+    marginTop: 20,
+    marginBottom: 15,
+    color: "#333",
   },
   input: {
     backgroundColor: "#fff",
