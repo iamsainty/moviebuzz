@@ -7,6 +7,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  StatusBar,
+  Platform,
 } from "react-native";
 import { debounce } from "lodash";
 import MovieCard from "../components/MovieCard";
@@ -92,90 +94,110 @@ export default function SearchScreen() {
     favorites.some((fav) => fav.imdbID === movie.imdbID);
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Search movies by title..."
-        value={query}
-        onChangeText={setQuery}
+    <View style={styles.safeArea}>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={Platform.OS === "android" ? "#f9f9f9" : undefined}
       />
-
-      {!query.trim() && (
-        <Text style={styles.infoText}>
-          Input some characters of a movie title to get results.
-        </Text>
-      )}
-
-      {isLoading && (
-        <ActivityIndicator
-          size="large"
-          color="#6200ee"
-          style={{ marginTop: 10 }}
+      <View style={styles.container}>
+        <TextInput
+          style={styles.input}
+          placeholder="Search movies by title..."
+          placeholderTextColor="#999"
+          value={query}
+          onChangeText={setQuery}
         />
-      )}
 
-      <FlatList
-        data={movies}
-        keyExtractor={(item) => item.imdbID}
-        renderItem={({ item }) => (
-          <MovieCard
-            title={item.Title}
-            poster={item.Poster}
-            year={item.Year}
-            onPress={() =>
-              navigation.navigate("MovieDetail", { imdbID: item.imdbID })
-            }
+        {!query.trim() && (
+          <Text style={styles.infoText}>
+            Start typing to explore movies by their title.
+          </Text>
+        )}
+
+        {isLoading && (
+          <ActivityIndicator
+            size="large"
+            color="#000"
+            style={{ marginTop: 10 }}
           />
         )}
-        contentContainerStyle={styles.list}
-        ListEmptyComponent={
-          query.length > 2 && !isLoading ? (
-            <Text style={styles.infoText}>No movies found.</Text>
-          ) : null
-        }
-      />
 
-      {hasMore && !isLoading && (
-        <TouchableOpacity style={styles.loadMoreBtn} onPress={loadMore}>
-          <Text style={styles.loadMoreText}>Load More</Text>
-        </TouchableOpacity>
-      )}
+        <FlatList
+          data={movies}
+          keyExtractor={(item) => item.imdbID}
+          renderItem={({ item }) => (
+            <MovieCard
+              title={item.Title}
+              poster={item.Poster}
+              year={item.Year}
+              isFavorite={isFavorited(item)}
+              onFavoriteToggle={() => toggleFavorite(item)}
+              onPress={() =>
+                navigation.navigate("MovieDetail", { imdbID: item.imdbID })
+              }
+            />
+          )}
+          contentContainerStyle={styles.list}
+          ListEmptyComponent={
+            query.length >= 2 && !isLoading ? (
+              <Text style={styles.infoText}>
+                No results found for "{query}"
+              </Text>
+            ) : null
+          }
+        />
+
+        {hasMore && !isLoading && (
+          <TouchableOpacity style={styles.loadMoreBtn} onPress={loadMore}>
+            <Text style={styles.loadMoreText}>Load More</Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#f9f9f9",
+    paddingTop: Platform.OS === "android" ? 30 : 0,
+  },
   container: {
     flex: 1,
-    padding: 10,
-    backgroundColor: "#fff",
+    padding: 16,
   },
   input: {
-    borderColor: "#ccc",
+    backgroundColor: "#fff",
+    borderColor: "#ddd",
     borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
     fontSize: 16,
-    marginBottom: 10,
+    elevation: 1,
   },
   infoText: {
     textAlign: "center",
-    color: "#555",
+    fontSize: 14,
     marginTop: 20,
   },
   list: {
-    paddingBottom: 80,
+    paddingBottom: 100,
+    marginTop: 10,
   },
   loadMoreBtn: {
-    backgroundColor: "#6200ee",
-    padding: 10,
-    marginVertical: 10,
-    borderRadius: 8,
+    backgroundColor: "#000",
+    paddingVertical: 10,
+    marginVertical: 16,
+    marginHorizontal: 40,
+    borderRadius: 10,
     alignItems: "center",
+    elevation: 2,
   },
   loadMoreText: {
     color: "#fff",
-    fontWeight: "bold",
+    fontWeight: "600",
+    fontSize: 14,
   },
 });
