@@ -7,6 +7,7 @@ import SearchScreen from "./screens/SearchScreen";
 import FavoritesScreen from "./screens/FavoritesScreen";
 import DetailsScreen from "./screens/DetailsScreen";
 import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet, Platform } from "react-native";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -15,16 +16,24 @@ function Tabs() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          let icon;
-          if (route.name === "Home") icon = "home";
-          else if (route.name === "Search") icon = "search";
-          else if (route.name === "Favourites") icon = "heart";
+        headerShown: false,
+        tabBarIcon: ({ focused, color }) => {
+          let iconName;
 
-          return <Ionicons name={icon} size={size} color={color} />;
+          if (route.name === "Home")
+            iconName = focused ? "home" : "home-outline";
+          else if (route.name === "Search")
+            iconName = focused ? "search" : "search-outline";
+          else if (route.name === "Favourites")
+            iconName = focused ? "heart" : "heart-outline";
+
+          return <Ionicons name={iconName} size={20} color={color} />;
         },
-        tabBarActiveTintColor: "#6200ee",
-        tabBarInactiveTintColor: "gray",
+        tabBarActiveTintColor: "#222222",
+        tabBarInactiveTintColor: "#999999",
+        tabBarStyle: styles.tabBar,
+        tabBarHideOnKeyboard: true,
+        tabBarLabelStyle: styles.tabBarLabel,
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
@@ -48,3 +57,16 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBar: {
+    backgroundColor: "white",
+    height: 60,
+    paddingBottom: Platform.OS === "ios" ? 20 : 10,
+  },
+  tabBarLabel: {
+    fontSize: 12,
+    fontWeight: "600",
+    marginBottom: 5,
+  },
+});
