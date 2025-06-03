@@ -52,7 +52,7 @@ export default function HomeScreen() {
               poster={item.Poster}
               year={item.Year}
               onPress={() =>
-                navigation.navigate("Details", { imdbID: item.imdbID })
+                navigation.navigate("MovieDetail", { imdbID: item.imdbID })
               }
             />
           )}
