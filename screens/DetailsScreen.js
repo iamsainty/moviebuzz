@@ -5,11 +5,12 @@ import {
   Image,
   StyleSheet,
   ScrollView,
-  Button,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { fetchMovieDetails } from "../utils/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FontAwesome } from "@expo/vector-icons";
 
 export default function DetailsScreen({ route }) {
   const { imdbID } = route.params;
@@ -49,15 +50,17 @@ export default function DetailsScreen({ route }) {
 
   if (loading) {
     return (
-      <ActivityIndicator size="large" color="#666" style={{ marginTop: 40 }} />
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#666" />
+      </View>
     );
   }
 
   if (!movie) {
     return (
-      <Text style={{ textAlign: "center", marginTop: 40 }}>
-        Movie not found
-      </Text>
+      <View style={styles.centered}>
+        <Text style={styles.error}>⚠️ Movie not found</Text>
+      </View>
     );
   }
 
@@ -72,54 +75,109 @@ export default function DetailsScreen({ route }) {
         }}
         style={styles.poster}
       />
-      <Text style={styles.title}>{movie.Title}</Text>
-      <Text style={styles.info}>🎬 Genre: {movie.Genre}</Text>
-      <Text style={styles.info}>📅 Year: {movie.Year}</Text>
-      <Text style={styles.info}>⭐ Rating: {movie.imdbRating}</Text>
-      <Text style={styles.plot}>{movie.Plot}</Text>
-      <View style={styles.button}>
-        <Button
-          title={
-            isFavorite ? "Remove from Favorites ❤️" : "Add to Favorites 🤍"
-          }
+
+      <View style={styles.details}>
+        <Text style={styles.title}>{movie.Title}</Text>
+        <Text style={styles.subtitle}>Directed by {movie.Director}</Text>
+
+        <View style={styles.infoGroup}>
+          <Text style={styles.infoItem}>Genre: {movie.Genre}</Text>
+          <Text style={styles.infoItem}>Year: {movie.Year}</Text>
+          <Text style={styles.infoItem}>IMDb: {movie.imdbRating}</Text>
+        </View>
+
+        <Text style={styles.plot}>{movie.Plot}</Text>
+
+        <TouchableOpacity
+          style={[
+            styles.favoriteButton,
+            isFavorite ? styles.favActive : styles.favInactive,
+          ]}
           onPress={toggleFavorite}
-        />
+        >
+          <FontAwesome
+            name={isFavorite ? "heart" : "heart-o"}
+            size={20}
+            color="#fff"
+          />
+          <Text style={styles.favText}>
+            {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+          </Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  centered: {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  error: {
+    fontSize: 18,
+    color: "#444",
+    textAlign: "center",
+  },
+  container: {
     padding: 16,
-    backgroundColor: "#fefefe",
+    backgroundColor: "#fff",
   },
   poster: {
-    width: 300,
+    width: "100%",
     height: 450,
-    borderRadius: 8,
-    marginBottom: 16,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  details: {
+    paddingHorizontal: 4,
   },
   title: {
-    fontSize: 22,
-    fontWeight: "bold",
+    fontSize: 26,
+    fontWeight: "700",
+    color: "#222",
     marginBottom: 6,
-    textAlign: "center",
   },
-  info: {
+  subtitle: {
     fontSize: 16,
-    marginBottom: 4,
+    color: "#555",
+    marginBottom: 12,
+  },
+  infoGroup: {
+    marginBottom: 16,
+    gap: 6,
+  },
+  infoItem: {
+    fontSize: 14,
+    color: "#444",
+    flexDirection: "row",
+    alignItems: "center",
   },
   plot: {
-    marginVertical: 10,
-    paddingHorizontal: 12,
     fontSize: 15,
-    textAlign: "center",
-    color: "#444",
+    color: "#333",
+    lineHeight: 22,
+    marginBottom: 20,
   },
-  button: {
-    marginTop: 16,
-    width: "80%",
+  favoriteButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    borderRadius: 8,
+    gap: 10,
+  },
+  favText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  favActive: {
+    backgroundColor: "#c0392b",
+  },
+  favInactive: {
+    backgroundColor: "#2980b9",
   },
 });
